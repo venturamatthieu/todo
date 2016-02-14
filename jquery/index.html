@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            <input type="text" name="addnewtodo">
+            <br/>
+            <ul id="todos"></ul>
+            <br/>
+            <div id="footer">
+                <div> 
+                    <span id="nb-task"></span> item(s) left
+                </div>
+                <div id="filtres">
+                    <button data-statut="all"> All</button>
+                    <button data-statut="active"> Active</button>
+                    <button data-statut="complete"> Completed</button>
+                </div>
+            </div>
+        </div>
+        <script src="./vendors/jquery/jquery-1.12.0.min.js"></script>
+        <script src="./app.js"></script>
+    </body>
+</html>
