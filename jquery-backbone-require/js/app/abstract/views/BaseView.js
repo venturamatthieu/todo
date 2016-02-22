@@ -23,9 +23,21 @@ define([
         },
         assign: function (view, selector) {
             view.setElement(this.$(selector)).render();
+        }, 
+        tatatata:function (){
+            
         }
+        
 
     });
+    
+    baseView.prototype.initialize = function(){
+        this.render();         
+    }
+    
+    baseView.prototype.render = function (){
+        this.$el.html(this.template);
+    }
     
     return baseView;
 });

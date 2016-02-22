@@ -59,3 +59,5 @@ X) Links
 * http://dailyjs.com/2013/03/07/backbone-tutorial-13/
 * http://codebeerstartups.com/2012/12/9-collection-views-in-backbone-js-learning-backbone-js/
 * https://webpack.github.io/docs/commonjs.html
+* http://blog.scottlogic.com/2012/12/14/view-inheritance-in-backbone.html
+* http://blog.xebia.fr/2013/06/10/javascript-retour-aux-bases-constructeur-prototype-et-heritage/

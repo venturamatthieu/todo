@@ -40,7 +40,10 @@ define([
             
             console.log("Route - Default - Index");
             // We have no matching route, lets display the home page
-            var indexDefault = new IndexDefaultView();            
+            var indexDefault = new IndexDefaultView(); 
+            indexDefault.trigger('customEvent', {id:'page-index'});
+
+            console.log(indexDefault);
 
         });
         
