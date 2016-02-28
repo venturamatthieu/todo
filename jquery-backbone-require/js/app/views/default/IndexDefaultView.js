@@ -17,11 +17,10 @@ define([
         this.params = "dede",
         
         this.template = _.template(defaultIndexTmpl),
-        
+                
         this.showLoad = function (data){
             console.log(data.id);
         },
-        
         
         AbstractBaseView.call(this);
         
@@ -30,7 +29,7 @@ define([
     //Gestion de l'heritage si besoin 
     _.extend(defaultIndexView, AbstractBaseView);
     _.extend(defaultIndexView.prototype, AbstractBaseView.prototype);
-    _.extend(defaultIndexView, Backbone.Events);
+    //_.extend(defaultIndexView, Backbone.Events);
     
     
     defaultIndexView.prototype.initialize = function(){
@@ -38,7 +37,7 @@ define([
         // super !
  	AbstractBaseView.prototype.initialize.call(this);
         
-        //Events Custom
+        //Events 
         this.on('customEvent', this.showLoad, this);
         
     }

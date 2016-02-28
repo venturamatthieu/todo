@@ -19,9 +19,15 @@ require.config({
         //Abstract
         abstract: './app/abstract',
         abstractbaseview: './app/abstract/views/BaseView',
+        abstractbasecontroller: './app/abstract/controllers/BaseController',
        
         //Routes
         routerapp: './router',
+        
+        //Controllers
+        controllers: './app/controllers/',
+        controllerDefault: './app/controllers/defaultController',
+        controllerTodo: './app/controllers/todoController',
         
         //Models
         models: './app/models/',

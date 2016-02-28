@@ -3,23 +3,22 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'indexdefaultview', 
-    'indextodoview'
-    
-    
-], function($, _, Backbone, IndexDefaultView, IndexTodoView) {
+    'controllerDefault', 
+    'controllerTodo'
+], function($, _, Backbone, defaultController, todoController) {
     
     'use strict'; 
     
-    var AppRouter = Backbone.Router.extend({
+    var AppDesktopRouter = Backbone.Router.extend({
+                
         routes: {
             
             // Default - Index
-            '' : 'defaultIndexAction',
-            
+            '' : 'default:index',
             
             // Todo - index
-            'todo': 'todoIndexAction'
+            'todo': 'todo:index',
+            'todo/edit/:id': 'todo:edit'
             
             // More
             // 'show/:id': 'show',
@@ -28,36 +27,33 @@ define([
             // '*default': 'default'
             
             
+        },
+        _bindRoutes: function() {
+            
+            var self = this;
+            
+            if (!self.routes) return;
+                        
+            _.each(self.routes, function(routeAction, route){
+                
+                var routeHash = routeAction.split(':');
+                
+                //on recupere le controller
+                var controllerClassName =  routeHash[0]+"Controller";
+                var controller = new (eval(controllerClassName));
+                
+                var actionName = routeHash[1]; //todo
+                var actionMethod = controller[actionName]; //index, edit, etc
+
+                self.route(route, routeAction, _.bind(actionMethod, controller));
+                
+            });
         }
     });
 
     var initialize = function() {
-                
-        var app_router = new AppRouter();
-        
-        // Default - Index
-        app_router.on('route:defaultIndexAction', function() {
-            
-            console.log("Route - Default - Index");
-            // We have no matching route, lets display the home page
-            var indexDefault = new IndexDefaultView(); 
-            indexDefault.trigger('customEvent', {id:'page-index'});
-
-            console.log(indexDefault);
-
-        });
-        
-        
-        // Todo - index
-        app_router.on('route:todoIndexAction', function() {
-            
-            console.log("Route - Todo - Index");
-            // We have no matching route, lets display the home page
-            var indexTodo = new IndexTodoView();
-
-        });
-        
-        
+        //Route pour le desktop
+        var app_desktop_router = new AppDesktopRouter();
 
         // Unlike the above, we don't call render on this view as it will handle
         // the render call internally after it loads data. Further more we load it
@@ -72,7 +68,7 @@ define([
             
         });
         
-        return app_router;
+        return app_desktop_router;
 
     };
 
