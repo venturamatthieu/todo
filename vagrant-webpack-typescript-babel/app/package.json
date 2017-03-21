@@ -1,0 +1,10 @@
+{
+  "name": "MyProject",
+  "description": "webpack es6 typescript babel",
+  "dependencies": {
+    "webpack": "2.*",
+    "typescript": "2.*",
+    "awesome-typescript-loader": "3.*"
+  },
+  "devDependencies": {}
+}
