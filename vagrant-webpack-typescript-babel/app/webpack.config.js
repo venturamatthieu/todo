@@ -4,12 +4,11 @@ var webpack = require('webpack');
 module.exports = {
   'entry': {
     // your entry file file (entry.ts or entry.js)
-    'd3metric': ['./entry'],
-    'd3metric.demo': ['./demo/demo.entry'],
+    'main': ['./src/js']
   },
   'output': {
-    'path': __dirname,
-    'filename': '[name].js'
+    'path': path.resolve(__dirname, 'build'),
+    'filename': '[name]-app.js'
   },
   'module': {
     'loaders': [
@@ -23,22 +22,13 @@ module.exports = {
       // babel-loader for pure javascript (es6) => javascript (es5)
       {
         'test': /\.(jsx?)$/,
-        'loaders': ['babel'],
+        'loaders': ['babel-loader', 'source-map-loader'],
         'exclude': [/node_modules/,nodeModulesPath]
       }
     ]
   },
-  'externals': {
-    // don't bundle the 'react' npm package with our bundle.js
-    // but get it from a global 'React' variable
-    'react': 'React'
-  },
   'plugins': [],
   'resolve': {
-    'root': [path.resolve('./src')],
-    'extensions': ['', '.js', '.jsx', '.ts', '.tsx'],
-
-    // this is only required when we "import 'jquery'"
-    // 'alias': { 'jquery': path.join(__dirname, "vendor", "jquery-2.2.0.min.js") }
+    'extensions': ['.js', '.jsx', '.ts', '.tsx']
   }
 };
