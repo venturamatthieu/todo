@@ -3,8 +3,7 @@ define([
   'underscore',
   'backbone', 
   'abstractbasecontroller', 
-  'indexdefaultview',
-  
+  'indexdefaultview'
   //'text!templatequestioncheckbox'
 ], function($, _, Backbone, AbstractBaseController, IndexDefaultView) {
     
@@ -13,6 +12,8 @@ define([
     // Our overall **AppView** is the top-level piece of UI.
     var defaultController = function (){ //AbstractBaseView.extend
         
+        AbstractBaseController.call(this);
+        
         this.index = function(){
             
             // We have no matching route, lets display the home page
@@ -20,8 +21,6 @@ define([
             indexDefault.trigger('customEvent', {id:'page-index'});
 
         };
-        
-        AbstractBaseController.call(this);
         
     };
     

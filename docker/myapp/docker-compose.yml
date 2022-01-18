@@ -1,0 +1,107 @@
+version: "3.9"
+
+services:
+  portainer:
+      image: portainer/portainer-ce:latest
+      networks:
+        - proxy
+      labels:
+        - traefik.enable=true
+        - "traefik.http.routers.portainer.rule=Host(`portainer.docker.localhost`)"
+        - traefik.http.routers.portainer-http.entrypoints=web
+        - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      volumes:
+        - "/var/run/docker.sock:/var/run/docker.sock"
+        - portainer_data:/data portainer/portainer-ce
+
+  reverse-proxy:
+    image: traefik:latest
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - './traefik.toml:/traefik.toml'
+      - "./letsencrypt:/letsencrypt"
+    networks:
+      - proxy
+
+  whoami:
+    image: 'traefik/whoami'
+    restart: 'unless-stopped'
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.whoami-http.entrypoints=web
+      - traefik.http.routers.whoami-http.rule=Host(`whoami.docker.localhost`)
+
+      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+      - traefik.http.routers.whoami-http.middlewares=https-redirect@docker
+
+      - traefik.http.routers.whoami-https.entrypoints=websecure
+      - traefik.http.routers.whoami-https.rule=Host(`whoami.docker.localhost`)
+      - traefik.http.routers.whoami-https.tls=true
+      - traefik.http.routers.whoami-https.tls.certresolver=myhttpchallenge
+    networks:
+      - proxy
+
+  nginx:
+    build: ./nginx/
+    container_name: nginx-container
+    depends_on:
+        - php
+    volumes:
+        - app-data:/var/www
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.myapp.rule=Host(`myapp.docker.localhost`)"
+      - traefik.http.routers.whoami-http.entrypoints=web
+
+    networks:
+        - proxy
+
+  php:
+    build: ./php/
+    container_name: php-container
+    expose:
+      - 9000
+    depends_on:
+      - mysql
+    volumes:
+      - app-data:/var/www
+    networks:
+      - proxy
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql-container
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: password
+    networks:
+      - proxy
+
+volumes:
+  portainer_data:
+  app-data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './www'
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './mysql-data'
+
+networks:
+  proxy:
+    driver: bridge

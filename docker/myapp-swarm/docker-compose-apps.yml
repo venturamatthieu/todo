@@ -1,0 +1,79 @@
+version: "3.3"
+
+services:
+  whoami:
+    image: 'traefik/whoami'
+    deploy:
+      replicas: 3
+      labels:
+        traefik.enable: 'true'
+        traefik.docker.network: proxy
+        traefik.http.routers.whoami.entrypoints: web
+        traefik.http.routers.whoami.rule: Path(`/whoami`)
+        traefik.http.services.whoami.loadbalancer.server.port: '80'
+    networks:
+      - proxy
+
+  whoami2:
+    image: 'traefik/whoami'
+    deploy:
+      replicas: 3
+      labels:
+        traefik.enable: 'true'
+        traefik.docker.network: proxy
+        traefik.http.routers.whoami2.entrypoints: web
+        traefik.http.routers.whoami2.rule: Path(`/whoami2`)
+        traefik.http.services.whoami2.loadbalancer.server.port: '80'
+    networks:
+      - proxy
+
+  whoami3:
+    image: 'containous/whoami'
+    deploy:
+      replicas: 3
+      labels:
+        traefik.enable: 'true'
+        traefik.docker.network: proxy
+        traefik.http.routers.whoami3.entrypoints: web
+        traefik.http.routers.whoami3.rule: Path(`/whoami3`)
+        traefik.http.services.whoami3.loadbalancer.server.port: '80'
+    networks:
+      - proxy
+
+  nginx:
+    #build: ./nginx/
+    image: 'nginx:local'
+    deploy:
+      replicas: 3
+      labels:
+        traefik.enable: 'true'
+        traefik.docker.network: proxy
+        traefik.http.routers.nginx.entrypoints: web
+        traefik.http.routers.nginx.rule: Path(`/backend`)
+        traefik.http.services.nginx.loadbalancer.server.port: '80'
+    volumes:
+        - app-data:/var/www
+    networks:
+      - proxy
+
+  php:
+    #build: ./php/
+    image: 'php:local'
+    deploy:
+      replicas: 3
+    volumes:
+      - app-data:/var/www
+    networks:
+      - proxy
+
+volumes:
+  app-data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './www'
+
+networks:
+  proxy:
+    external: true

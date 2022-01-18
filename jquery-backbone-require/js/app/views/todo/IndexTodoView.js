@@ -78,7 +78,10 @@ define([
             //todo.save();
 
             //TodoCollection.add(todo);
-
+            
+            //Backbone.sync('create', this.todos); 
+            
+            
             this.todos.create({title: val});
 
             $input.val('');
