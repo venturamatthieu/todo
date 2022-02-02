@@ -32,7 +32,19 @@ sudo echo "alias python=/usr/bin/python3" >> /home/vagrant/.bashrc
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo usermod -aG docker vagrant
-sudo service docker start
+sudo cat <<EOF | sudo tee /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+sudo systemctl enable docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 fi
 
 echo "[5]: add kubernetes repository to source.list"
@@ -46,7 +58,6 @@ sudo apt-get update -qq >/dev/null
 
 echo "[6]: install kubelet / kubeadm / kubectl / kubernetes-cni"
 sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni > /dev/null
-
 sudo sed -i 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/g' /etc/ssh/sshd_config
 sudo systemctl restart sshd
 
